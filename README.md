@@ -1,19 +1,95 @@
-# React + Vite
+# StudyFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StudyFlow is a responsive study-planning website built with React. Students can organise study tasks, track progress, use a focus timer, and save their preferences in the browser.
 
-Currently, two official plugins are available:
+This is a front-end-only project. It uses local JavaScript data and browser `localStorage`; it does not use an API, backend, database, or authentication.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Project links
 
-## React Compiler
+- **GitHub repository:** [StudyFlow on GitHub](https://github.com/umutoni-dinah/week8-studyflow)
+- **Live website:** Add the deployed website link here
+- **Video walkthrough:** Add your 3–5 minute walkthrough link here
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Features
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+- **Dashboard:** Shows total, pending, and completed tasks, progress, and upcoming tasks. Counts are derived from the shared task list.
+- **Tasks:** Add, edit, delete, and complete tasks. Search by title, filter by category and status, and sort by due date or title. The form validates blank titles and the page distinguishes an empty task list from empty search results.
+- **Focus:** Start, pause, and reset Study and Break timers. Switching sessions resets the timer.
+- **Settings:** Save a display name, preferred Study duration, and compact-spacing preference in the browser.
+- **Responsive navigation:** Move between Dashboard, Tasks, Focus, and Settings. Unknown routes show a Not Found page.
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+You’ll need Node.js and npm installed.
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local address printed in the terminal to view the website.
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+## Project structure
+
+```text
+src/
+├── components/
+│   ├── FocusTimer.jsx
+│   ├── SummaryCard.jsx
+│   ├── TaskCard.jsx
+│   ├── TaskFilters.jsx
+│   └── TaskForm.jsx
+├── data/
+│   ├── defaultSettings.js
+│   └── initialTasks.js
+├── hooks/
+│   ├── useDebounce.js
+│   ├── useDocumentTitle.js
+│   ├── useLocalStorage.js
+│   └── useToggle.js
+├── layouts/
+│   └── SiteLayout.jsx
+├── pages/
+│   ├── DashboardPage.jsx
+│   ├── FocusPage.jsx
+│   ├── SettingsPage.jsx
+│   └── TasksPage.jsx
+├── App.jsx
+├── index.css
+└── main.jsx
+```
+
+## State and component design
+
+`App.jsx` owns the shared task state because both the Dashboard and Tasks pages need the same list. It passes tasks and task-changing callbacks to those pages. Updating a task on the Tasks page therefore updates the Dashboard as well.
+
+`SiteLayout` provides the shared header, navigation, and page container. Components such as `TaskCard`, `TaskForm`, `TaskFilters`, and `SummaryCard` receive their data and callbacks through props.
+
+## Hooks, effects, and persistence
+
+- `useLocalStorage` restores and saves tasks and settings in the current browser.
+- `useToggle` manages the Study and Break session choice.
+- `useDocumentTitle` updates the browser tab title for each page and includes the pending task count on the Tasks page.
+- `useDebounce` delays task search updates while the student is typing.
+- `useRef` focuses the task search field and stores the timer interval ID.
+- The timer interval is cleared in an effect cleanup function, preventing leftover intervals.
+
+## Rendering and performance
+
+The timer’s changing seconds are state inside `FocusTimer`, so each timer tick does not update the shared task state in `App.jsx`. React can render a component when its state changes; the browser DOM is updated only where the rendered result differs.
+
+`TasksPage` uses `useMemo` for the combined search, filtering, and sorting calculation. With a small task list, the performance benefit is modest, but it keeps the derived list calculation tied to its inputs. The React Compiler can automate some memoization; this project does not require compiler setup.
+
+## What I learned
+
+- How to organise a multi-page React app with reusable components, props, children, and React Router.
+- How to manage shared state, controlled forms, validation, and immutable list updates.
+- How to derive filtered and sorted results from state and save data in `localStorage`.
+- How to use custom Hooks, refs, and effect cleanup for practical interface features.
+- How React rendering works and how keeping timer state local avoids unrelated updates.
