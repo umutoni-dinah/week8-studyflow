@@ -7,8 +7,8 @@ This is a front-end-only project. It uses local JavaScript data and browser `loc
 ## Project links
 
 - **GitHub repository:** [StudyFlow on GitHub](https://github.com/umutoni-dinah/week8-studyflow)
-- **Live website:** Add the deployed website link here
-- **Video walkthrough:** Add your 3–5 minute walkthrough link here
+- **Live website:** https://week8-studyflow.vercel.app/
+- **Video walkthrough:** https://youtu.be/CcMTmtrVB1c
 
 ## Features
 
