@@ -1,47 +1,102 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes } from "react-router-dom";
+import DashboardPage from "./pages/DashboardPage.jsx";
+import SiteLayout from "./layouts/SiteLayout.jsx";
+import useLocalStorage from "./hooks/useLocalStorage.js";
+import { initialTasks } from "./data/initialTasks.js";
+import TasksPage from "./pages/TasksPage.jsx";
+import FocusPage from "./pages/FocusPage.jsx";
+import SettingsPage from './pages/SettingsPage.jsx'
 
-function DashboardPage() {
-  return <h1 className="text-3xl font-bold text-blue-700">Dashboard</h1>
+function TasksPlaceholder() {
+  return (
+    <section>
+      <h1 className="text-3xl font-bold">Tasks</h1>
+      <p className="mt-2 text-slate-600">We’ll build task management next.</p>
+    </section>
+  );
 }
 
-function TasksPage() {
-  return <h1 className="text-3xl font-bold text-blue-700">Tasks</h1>
+function FocusPlaceholder() {
+  return (
+    <section>
+      <h1 className="text-3xl font-bold">Focus</h1>
+      <p className="mt-2 text-slate-600">We’ll build the focus timer soon.</p>
+    </section>
+  );
 }
 
-function FocusPage() {
-  return <h1 className="text-3xl font-bold text-blue-700">Focus</h1>
-}
-
-function SettingsPage() {
-  return <h1 className="text-3xl font-bold text-blue-700">Settings</h1>
+function SettingsPlaceholder() {
+  return (
+    <section>
+      <h1 className="text-3xl font-bold">Settings</h1>
+      <p className="mt-2 text-slate-600">We’ll build your preferences soon.</p>
+    </section>
+  );
 }
 
 function NotFoundPage() {
   return (
-    <div>
+    <section>
       <h1 className="text-3xl font-bold">Page not found</h1>
-      <Link to="/">Return to Dashboard</Link>
-    </div>
-  )
+      <Link className="mt-4 inline-block text-blue-700 underline" to="/">
+        Return to Dashboard
+      </Link>
+    </section>
+  );
 }
 
 export default function App() {
-  return (
-    <div className="min-h-screen bg-slate-100 p-8">
-      <nav className="mb-8 flex flex-wrap gap-4">
-        <Link to="/">Dashboard</Link>
-        <Link to="/tasks">Tasks</Link>
-        <Link to="/focus">Focus</Link>
-        <Link to="/settings">Settings</Link>
-      </nav>
+  const [tasks, setTasks] = useLocalStorage("studyflow-tasks", initialTasks);
 
+  function addTask(taskDetails) {
+    setTasks((currentTasks) => [
+      ...currentTasks,
+      { ...taskDetails, id: crypto.randomUUID(), completed: false },
+    ]);
+  }
+
+  function updateTask(updatedTask) {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task,
+      ),
+    );
+  }
+
+  function deleteTask(taskId) {
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId),
+    );
+  }
+
+  function toggleTask(taskId) {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task,
+      ),
+    );
+  }
+
+  return (
+    <SiteLayout>
       <Routes>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/tasks" element={<TasksPage />} />
+        <Route path="/" element={<DashboardPage tasks={tasks} />} />
+        <Route
+          path="/tasks"
+          element={
+            <TasksPage
+              tasks={tasks}
+              onAddTask={addTask}
+              onUpdateTask={updateTask}
+              onDeleteTask={deleteTask}
+              onToggleTask={toggleTask}
+            />
+          }
+        />
         <Route path="/focus" element={<FocusPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </div>
-  )
+    </SiteLayout>
+  );
 }
