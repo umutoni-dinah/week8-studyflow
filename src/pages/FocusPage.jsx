@@ -1,16 +1,16 @@
-import useToggle from '../hooks/useToggle.js'
-import FocusTimer from '../components/FocusTimer.jsx'
-import useDocumentTitle from '../hooks/useDocumentTitle.js'
-import useLocalStorage from '../hooks/useLocalStorage.js'
-import { defaultSettings } from '../data/defaultSettings.js'
+import useToggle from "../hooks/useToggle.js";
+import FocusTimer from "../components/FocusTimer.jsx";
+import useDocumentTitle from "../hooks/useDocumentTitle.js";
+import useLocalStorage from "../hooks/useLocalStorage.js";
+import { defaultSettings } from "../data/defaultSettings.js";
 
 export default function FocusPage() {
-  const [isBreak, , setIsBreak] = useToggle(false)
-  const sessionType = isBreak ? 'Break' : 'Study'
-  const durationMinutes = isBreak ? 5 : settings.studyDuration
-  const [settings] = useLocalStorage('studyflow-settings', defaultSettings)
+  const [settings] = useLocalStorage("studyflow-settings", defaultSettings);
+  const [isBreak, , setIsBreak] = useToggle(false);
+  const sessionType = isBreak ? "Break" : "Study";
+  const durationMinutes = isBreak ? 5 : settings.studyDuration;
 
-  useDocumentTitle('Focus | StudyFlow')
+  useDocumentTitle("Focus | StudyFlow");
 
   return (
     <div className="space-y-8">
@@ -31,8 +31,8 @@ export default function FocusPage() {
           onClick={() => setIsBreak(false)}
           className={`rounded-lg px-4 py-2 font-semibold ${
             !isBreak
-              ? 'bg-blue-700 text-white'
-              : 'border border-slate-300 bg-white text-slate-700'
+              ? "bg-blue-700 text-white"
+              : "border border-slate-300 bg-white text-slate-700"
           }`}
         >
           Study
@@ -43,8 +43,8 @@ export default function FocusPage() {
           onClick={() => setIsBreak(true)}
           className={`rounded-lg px-4 py-2 font-semibold ${
             isBreak
-              ? 'bg-blue-700 text-white'
-              : 'border border-slate-300 bg-white text-slate-700'
+              ? "bg-blue-700 text-white"
+              : "border border-slate-300 bg-white text-slate-700"
           }`}
         >
           Break
@@ -61,5 +61,5 @@ export default function FocusPage() {
         Switching between Study and Break starts a fresh timer for that session.
       </p>
     </div>
-  )
+  );
 }
